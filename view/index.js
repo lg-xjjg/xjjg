@@ -8,12 +8,44 @@ var TITLE = '分类结果'
 
 module.exports = view
 
+class QPhoto extends Nanocomponent {
+  constructor (state, emit) {
+    super()
+    this.state = state
+    this.emit = emit
+    this.back = this.back.bind(this)
+  }
+
+  createElement () {
+    return html`
+      <div class='w-100 flex flex-column flex-auto items-center'>
+        <div class='w-90'>
+          <p class='f4 purple-blue' onclick=${this.back()}>返回</p>
+          <img src=${this.state.photo} />
+        </div>
+      </div>
+    `
+  }
+
+  back () {
+    return e => {
+      this.emit('state:status', 3)
+      this.emit('render')
+    }
+  }
+
+  update () {
+    return true
+  }
+}
+
 class PersonList extends Nanocomponent {
   constructor (state, emit) {
     super()
     this.state = state
     this.emit = emit
     this.back = this.back.bind(this)
+    this.clickPhoto = this.clickPhoto.bind(this)
   }
 
   createElement () {
@@ -37,10 +69,12 @@ class PersonList extends Nanocomponent {
           </li>
           ${this.state.person.list.map((d, i) => html`
             <li class='flex f6'>
-              <div class='flex w-50 h2 bl bb br bw05 b--purple-blue items-center justify-center'><span>${d.date}</span></div>
-              <div class='flex w-50 h2 bb br bw05 b--purple-blue items-center justify-center'><span>
-                ${d.score === 1 ? '优' : (d.score === 2 ? '中' : '差')}
-              </span></div>
+              <div class='flex w-50 h2 bl bb br bw05 b--purple-blue items-center justify-center'><span>${d.dateFormat}</span></div>
+              <div class='flex w-50 h2 bb br bw05 b--purple-blue items-center justify-center'>
+                <span onclick=${this.clickPhoto(d)} class='${d.photo ? "purple-blue" : ""}'>
+                  ${d.score === 1 ? '优' : (d.score === 2 ? '中' : '差')}
+                </span>
+              </div>
             </li>
           `)}
         </ul>
@@ -52,6 +86,27 @@ class PersonList extends Nanocomponent {
     return e => {
       this.emit('state:status', 2)
       this.emit('render')
+    }
+  }
+
+  clickPhoto (data) {
+    return e => {
+      if (!data.photo) {
+        return
+      }
+
+      this.emit('state:loading', true)
+      this.emit('render')
+
+      getData('photo', JSON.stringify({ id: data.id, date: data.date }), datas => {
+        var photo = datas[0].photo
+        this.emit('state:photo', photo)
+        this.emit('state:status', 4)
+        this.emit('state:loading', false)
+        this.emit('render')
+      }, err => {
+        console.log(err)
+      })
     }
   }
 
@@ -192,6 +247,7 @@ class Component extends Nanocomponent {
     this.villageList = new VillageList(state, emit)
     this.cunminList = new CunminList(state, emit)
     this.personList = new PersonList(state, emit)
+    this.qPhoto = new QPhoto(state, emit)
   }
 
   createElement () {
@@ -211,7 +267,12 @@ class Component extends Nanocomponent {
             (
               this.state.status === 2 ?
               this.cunminList.render() :
-              this.personList.render()
+              (
+                this.state.status === 3 ?
+                this.personList.render() :
+                this.qPhoto.render()
+              )
+
             )
           )
         }

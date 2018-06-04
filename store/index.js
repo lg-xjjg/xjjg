@@ -4,7 +4,8 @@ module.exports = (state, emitter) => {
     status: 0,
     village: [],
     cunmin: [],
-    person: {}
+    person: {},
+    photo: null
   }
 
   emitter.on('state:status', status => {
@@ -17,6 +18,10 @@ module.exports = (state, emitter) => {
 
   emitter.on('state:village', datas => {
     state.village = solveData(datas)
+  })
+
+  emitter.on('state:photo', photo => {
+    state.photo = photo
   })
 
   emitter.on('state:cunmin', datas => {
@@ -36,7 +41,7 @@ module.exports = (state, emitter) => {
       var day = t.getDate()
       month = month.length === 1 ? '0' + month : month
       day = day.length === 1 ? '0' + day : day
-      d.date = `${y}.${month}.${day}`
+      d.dateFormat = `${y}.${month}.${day}`
 
       total += 1
       if (d.score === 1) {
