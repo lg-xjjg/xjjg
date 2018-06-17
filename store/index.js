@@ -3,17 +3,53 @@ module.exports = (state, emitter) => {
     loading: true,
     status: 0,
     village: [],
+    villageId: null,
+    reportList: [],
     tab: true,
     cunmin: [],
     person: {},
     photo: null
   }
 
+  emitter.on('state:reportList', reportList => {
+    reportList = reportList.filter(r => {
+      return r.score !== 1
+    })
+
+    reportList = reportList.map(d => {
+      var t = new Date(d.date)
+      var y = t.getFullYear()
+      var month = t.getMonth() + 1
+      var day = t.getDate()
+      month = month.length === 1 ? '0' + month : month
+      day = day.length === 1 ? '0' + day : day
+      d.dateFormat = `${y}.${month}.${day}`
+
+      if (d.score === 2) {
+        d.score = '中'
+      } else if (d.score === 3) {
+        d.score = '差'
+      }
+
+      return d
+    })
+
+    reportList = reportList.sort((a, b) => {
+      return b.date - a.date
+    })
+
+    state.reportList = reportList
+  })
+
+  emitter.on('state:villageId', villageId => {
+    state.villageId = villageId
+  })
+
   emitter.on('state:status', status => {
     state.status = status
   })
 
-  emitter.on('state:tab', status => {
+  emitter.on('state:tab', tab => {
     state.tab = tab
   })
 
