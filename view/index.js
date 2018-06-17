@@ -8,6 +8,47 @@ var TITLE = '分类结果'
 
 module.exports = view
 
+class QTab extends Nanocomponent {
+  constructor (state, emit, qBox) {
+    super()
+    this.state = state
+    this.emit = emit
+    this.handleClick = this.handleClick.bind(this)
+    this.qBox = qBox
+  }
+
+  createElement () {
+    var tab = this.state.tab
+
+    return html`
+      <section class='w-100 flex justify-between purple-blue'>
+        <div
+          onclick=${this.handleClick(true)}
+          class='h2 flex w-50 b--blue bw1 items-center tc ${tab ? "bb" : "o-50"}'>
+          <p class='w-100'>总体排名</p>
+        </div>
+        <div
+          onclick=${this.handleClick(false)}
+          class='h2 flex w-50 b--blue bw1 items-center tc ${!tab ? "bb" : "o-50"}'>
+          <p class='w-100'>不合格清单</p>
+        </div>
+      </section>
+    `
+  }
+
+  handleClick (tab) {
+    return e => {
+      this.emit('state:tab', tab)
+      this.qBox.render()
+      this.render()
+    }
+  }
+
+  update () {
+    return true
+  }
+}
+
 class QPhoto extends Nanocomponent {
   constructor (state, emit) {
     super()
@@ -120,6 +161,7 @@ class CunminList extends Nanocomponent {
     super()
     this.state = state
     this.emit = emit
+    this.qTab = new QTab(state, emit)
     this.handleClick = this.handleClick.bind(this)
     this.back = this.back.bind(this)
   }
@@ -127,25 +169,28 @@ class CunminList extends Nanocomponent {
   createElement () {
     return html`
       <ul class='w-100 pa0'>
+        ${this.qTab.render()}
         <p class='f4 purple-blue ml2' onclick=${this.back()}>返回</p>
         <li class='flex'>
-          <div class='flex w-20 h2 ba bw05 b--purple-blue items-center justify-center'><span>排名</span></div>
-          <div class='flex w-20 h2 bt bb br bw05 b--purple-blue items-center justify-center'><span>姓名</span></div>
-          <div class='flex w-20 h2 bt bb br bw05 b--purple-blue items-center justify-center'><span>上</span></div>
-          <div class='flex w-20 h2 bt bb br bw05 b--purple-blue items-center justify-center'><span>中</span></div>
-          <div class='flex w-20 h2 bt bb br bw05 b--purple-blue items-center justify-center'><span>下</span></div>
+          <div class='flex w-16 h2 ba bw05 b--purple-blue items-center justify-center'><span>排名</span></div>
+          <div class='flex w-16 h2 bt bb br bw05 b--purple-blue items-center justify-center'><span>姓名</span></div>
+          <div class='flex w-16 h2 bt bb br bw05 b--purple-blue items-center justify-center'><span>上</span></div>
+          <div class='flex w-16 h2 bt bb br bw05 b--purple-blue items-center justify-center'><span>中</span></div>
+          <div class='flex w-16 h2 bt bb br bw05 b--purple-blue items-center justify-center'><span>下</span></div>
+          <div class='flex w-16 h2 bt bb br bw05 b--purple-blue items-center justify-center'><span>总分</span></div>
         </li>
         ${this.state.cunmin.map((d, i) => html`
           <li class='flex f7'>
-            <div class='flex w-20 h2 bb br bl bw05 b--purple-blue items-center justify-center'><span>${i + 1}</span></div>
+            <div class='flex w-16 h2 bb br bl bw05 b--purple-blue items-center justify-center'><span>${i + 1}</span></div>
             <div
               onclick=${this.handleClick(d.id, d.name , d.phone)}
-              class='flex w-20 h2 bb br bw05 b--purple-blue items-center justify-center purple-blue'>
+              class='flex w-16 h2 bb br bw05 b--purple-blue items-center justify-center purple-blue'>
               <span>${d.name}</span>
             </div>
-            <div class='flex w-20 h2 bb br bw05 b--purple-blue items-center justify-center'><span>${d.score1}</span></div>
-            <div class='flex w-20 h2 bb br bw05 b--purple-blue items-center justify-center'><span>${d.score2}</span></div>
-            <div class='flex w-20 h2 bb br bw05 b--purple-blue items-center justify-center'><span>${d.score3}</span></div>
+            <div class='flex w-16 h2 bb br bw05 b--purple-blue items-center justify-center'><span>${d.score1}</span></div>
+            <div class='flex w-16 h2 bb br bw05 b--purple-blue items-center justify-center'><span>${d.score2}</span></div>
+            <div class='flex w-16 h2 bb br bw05 b--purple-blue items-center justify-center'><span>${d.score3}</span></div>
+            <div class='flex w-16 h2 bb br bw05 b--purple-blue items-center justify-center'><span>${d.total}</span></div>
           </li>
         `)}
       </ul>
@@ -196,23 +241,21 @@ class VillageList extends Nanocomponent {
     return html`
       <ul class='w-100 pa0'>
         <li class='flex'>
-          <div class='flex w-20 h2 ba bw05 b--purple-blue items-center justify-center'><span>排名</span></div>
-          <div class='flex w-20 h2 bt bb br bw05 b--purple-blue items-center justify-center'><span>村庄</span></div>
-          <div class='flex w-20 h2 bt bb br bw05 b--purple-blue items-center justify-center'><span>上</span></div>
-          <div class='flex w-20 h2 bt bb br bw05 b--purple-blue items-center justify-center'><span>中</span></div>
-          <div class='flex w-20 h2 bt bb br bw05 b--purple-blue items-center justify-center'><span>下</span></div>
+          <div class='flex w-25 h2 ba bw05 b--purple-blue items-center justify-center'><span>排名</span></div>
+          <div class='flex w-25 h2 bt bb br bw05 b--purple-blue items-center justify-center'><span>村庄</span></div>
+          <div class='flex w-25 h2 bt bb br bw05 b--purple-blue items-center justify-center'><span>合格率</span></div>
+          <div class='flex w-25 h2 bt bb br bw05 b--purple-blue items-center justify-center'><span>参与率</span></div>
         </li>
         ${this.state.village.map((d, i) => html`
           <li class='flex f7'>
-            <div class='flex w-20 h2 bb br bl bw05 b--purple-blue items-center justify-center'><span>${i + 1}</span></div>
+            <div class='flex w-25 h2 bb br bl bw05 b--purple-blue items-center justify-center'><span>${i + 1}</span></div>
             <div
               onclick=${this.handleClick(d.id)}
-              class='flex w-20 h2 bb br bw05 b--purple-blue items-center justify-center purple-blue'>
+              class='flex w-25 h2 bb br bw05 b--purple-blue items-center justify-center purple-blue'>
               <span>${d.name}</span>
             </div>
-            <div class='flex w-20 h2 bb br bw05 b--purple-blue items-center justify-center'><span>${d.score1}</span></div>
-            <div class='flex w-20 h2 bb br bw05 b--purple-blue items-center justify-center'><span>${d.score2}</span></div>
-            <div class='flex w-20 h2 bb br bw05 b--purple-blue items-center justify-center'><span>${d.score3}</span></div>
+            <div class='flex w-25 h2 bb br bw05 b--purple-blue items-center justify-center'><span>${d.good}</span></div>
+            <div class='flex w-25 h2 bb br bw05 b--purple-blue items-center justify-center'><span>${d.join}</span></div>
           </li>
         `)}
       </ul>
@@ -239,15 +282,37 @@ class VillageList extends Nanocomponent {
   }
 }
 
-class Component extends Nanocomponent {
+class QBox extends Nanocomponent {
   constructor (state, emit) {
     super()
     this.state = state
     this.emit = emit
     this.villageList = new VillageList(state, emit)
+  }
+
+  createElement () {
+    return html`
+      <section class='w-100'>
+        ${this.state.tab ? this.villageList.render() : ""}
+      </section>
+    `
+  }
+
+  update () {
+    return true
+  }
+}
+
+class Component extends Nanocomponent {
+  constructor (state, emit) {
+    super()
+    this.state = state
+    this.emit = emit
     this.cunminList = new CunminList(state, emit)
     this.personList = new PersonList(state, emit)
+    this.villageList = new VillageList(state, emit)
     this.qPhoto = new QPhoto(state, emit)
+    this.qBox = new QBox(state, emit)
   }
 
   createElement () {
@@ -272,7 +337,6 @@ class Component extends Nanocomponent {
                 this.personList.render() :
                 this.qPhoto.render()
               )
-
             )
           )
         }
@@ -287,6 +351,9 @@ class Component extends Nanocomponent {
         this.emit('state:status', 1)
         this.emit('state:village', datas)
         this.emit('state:loading', false)
+        setTimeout(() => {
+          console.log(123)
+        })
         this.emit('render')
       }, err => {
         console.log(err)

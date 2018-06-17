@@ -3,6 +3,7 @@ module.exports = (state, emitter) => {
     loading: true,
     status: 0,
     village: [],
+    tab: true,
     cunmin: [],
     person: {},
     photo: null
@@ -12,12 +13,27 @@ module.exports = (state, emitter) => {
     state.status = status
   })
 
+  emitter.on('state:tab', status => {
+    state.tab = tab
+  })
+
   emitter.on('state:loading', bool => {
     state.loading = bool
   })
 
   emitter.on('state:village', datas => {
-    state.village = solveData(datas)
+    datas = datas.sort((a, b) => {
+      return (b.score1 * 2 - b.score2  - b.score3 * 2) - (a.score1 * 2 - a.score2  - a.score3 * 2)
+    })
+
+    datas = datas.map(d => {
+      var t = d.score1 + d.score2 + d.score3
+      d.good = ((d.score1 / t) * 100).toFixed(1) + '%'
+      d.join = (((d.score1 + d.score2) / t) * 100).toFixed(1) + '%'
+      return d
+    })
+
+    state.village = datas
   })
 
   emitter.on('state:photo', photo => {
@@ -25,7 +41,12 @@ module.exports = (state, emitter) => {
   })
 
   emitter.on('state:cunmin', datas => {
-    state.cunmin = solveData(datas)
+    datas = datas.map(d => {
+      d.total = d.score1 * 2 - d.score2 - d.score3 * 2
+      return d
+    })
+
+    state.cunmin = datas
   })
 
   emitter.on('state:person', datas => {
@@ -55,28 +76,16 @@ module.exports = (state, emitter) => {
       return d
     })
 
+    state.person.list = state.person.list.sort((a, b) => {
+      return b.date - a.date
+    })
+
     state.person.name = datas.name
     state.person.phone = datas.phone
-    state.person.score1 = ((score1 / total) * 100).toFixed(1) + '%'
-    state.person.score2 = ((score2 / total) * 100).toFixed(1) + '%'
-    state.person.score3 = ((score3 / total) * 100).toFixed(1) + '%'
+    state.person.score1 = score1
+    state.person.score2 = score2
+    state.person.score3 = score3
   })
 
   Object.assign(state, INIT_DATA)
-}
-
-function solveData (datas) {
-  datas = datas.sort((a, b) => {
-    return (b.score1 * 2 - b.score2  - b.score3 * 2) - (a.score1 * 2 - a.score2  - a.score3 * 2)
-  })
-
-  datas = datas.map(d => {
-    var t = d.score1 + d.score2 + d.score3
-    d.score1 = ((d.score1 / t) * 100).toFixed(1) + '%'
-    d.score2 = ((d.score2 / t) * 100).toFixed(1) + '%'
-    d.score3 = ((d.score3 / t) * 100).toFixed(1) + '%'
-    return d
-  })
-
-  return datas
 }
