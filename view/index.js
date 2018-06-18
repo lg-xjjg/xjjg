@@ -27,19 +27,21 @@ class ReportList extends Nanocomponent {
     } else {
       return html`
         <ul class='w-100 pa0 mt0'>
-          <li class='flex'>
-            <div class='flex w-25 h2 ba bw05 b--purple-blue items-center justify-center'><span>日期</span></div>
-            <div class='flex w-25 h2 bt bb br bw05 b--purple-blue items-center justify-center'><span>编号</span></div>
-            <div class='flex w-25 h2 bt bb br bw05 b--purple-blue items-center justify-center'><span>姓名</span></div>
-            <div class='flex w-25 h2 bt bb br bw05 b--purple-blue items-center justify-center'><span>情况</span></div>
+          <li class='flex f7'>
+            <div class='flex w-20 h2 ba bw05 b--purple-blue items-center justify-center'><span>日期</span></div>
+            <div class='flex w-10 h2 bt bb br bw05 b--purple-blue items-center justify-center'><span>情况</span></div>
+            <div class='flex w-20 h2 bt bb br bw05 b--purple-blue items-center justify-center'><span>编号</span></div>
+            <div class='flex w-20 h2 bt bb br bw05 b--purple-blue items-center justify-center'><span>姓名</span></div>
+            <div class='flex w-30 h2 bt bb br bw05 b--purple-blue items-center justify-center'><span>手机</span></div>
           </li>
           ${this.state.reportList.map(r => {
             return html`
-              <li class='flex'>
-                <div class='flex w-25 h2 bb br bl bw05 b--purple-blue items-center justify-center'><span>${r.dateFormat}</span></div>
-                <div class='flex w-25 h2 bb br bw05 b--purple-blue items-center justify-center'><span>${r.num}</span></div>
-                <div class='flex w-25 h2 bb br bw05 b--purple-blue items-center justify-center'><span>${r.name}</span></div>
-                <div class='flex w-25 h2 bb br bw05 b--purple-blue items-center justify-center'><span>${r.score}</span></div>
+              <li class='flex f7'>
+                <div class='flex w-20 h2 bb br bl bw05 b--purple-blue items-center justify-center'><span>${r.dateFormat}</span></div>
+                <div class='flex w-10 h2 bb br bw05 b--purple-blue items-center justify-center'><span>${r.score}</span></div>
+                <div class='flex w-20 h2 bb br bw05 b--purple-blue items-center justify-center'><span>${r.num}</span></div>
+                <div class='flex w-20 h2 bb br bw05 b--purple-blue items-center justify-center'><span>${r.name}</span></div>
+                <div class='flex w-30 h2 bb br bw05 b--purple-blue items-center justify-center'><span>${r.phone}</span></div>
               </li>
             `
           })}
