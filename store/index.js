@@ -1,5 +1,9 @@
 module.exports = (state, emitter) => {
   const INIT_DATA = {
+    page: 'record'
+  }
+
+  const XJJG_DATA = {
     loading: true,
     status: 0,
     village: [],
@@ -47,6 +51,10 @@ module.exports = (state, emitter) => {
 
   emitter.on('state:status', status => {
     state.status = status
+  })
+
+  emitter.on('state:page', page => {
+    state.page = page
   })
 
   emitter.on('state:tab', tab => {
@@ -123,5 +131,5 @@ module.exports = (state, emitter) => {
     state.person.score3 = score3
   })
 
-  Object.assign(state, INIT_DATA)
+  Object.assign(state, XJJG_DATA, INIT_DATA)
 }

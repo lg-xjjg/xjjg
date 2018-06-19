@@ -16,6 +16,7 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 app.use(require('./store'))
+app.use(require('./store/cz.js'))
 
 app.route('/', require('./view'))
 

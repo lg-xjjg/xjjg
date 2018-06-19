@@ -1,10 +1,11 @@
 var html = require('choo/html')
 var Nanocomponent = require('choo/component')
 var ImageCompressor = require('image-compressor.js')
-
+var QCZ = require('./cz.js')
 const { getData } = require('../fetch')
 
-var TITLE = '分类结果'
+
+var TITLE = '统计结果'
 
 module.exports = view
 
@@ -41,7 +42,7 @@ class ReportList extends Nanocomponent {
                 <div class='flex w-10 h2 bb br bw05 b--purple-blue items-center justify-center'><span>${r.score}</span></div>
                 <div class='flex w-20 h2 bb br bw05 b--purple-blue items-center justify-center'><span>${r.num}</span></div>
                 <div class='flex w-20 h2 bb br bw05 b--purple-blue items-center justify-center'><span>${r.name}</span></div>
-                <div class='flex w-30 h2 bb br bw05 b--purple-blue items-center justify-center'><span>${r.phone}</span></div>
+                <div class='flex w-30 h2 bb br bw05 b--purple-blue items-center justify-center'><span>${r.phone ? r.phone : '暂无'}</span></div>
               </li>
             `
           })}
@@ -381,7 +382,7 @@ class QBox extends Nanocomponent {
   }
 }
 
-class Component extends Nanocomponent {
+class QXJJG extends Nanocomponent {
   constructor (state, emit) {
     super()
     this.state = state
@@ -396,7 +397,7 @@ class Component extends Nanocomponent {
   createElement () {
     return html`
       <main class='w-100 flex flex-column flex-auto bg-dz items-center'>
-        <header class='w-100 tc purple-blue f3 bold05 bg-white pv2 tracked'>分类结果</header>
+        <header class='w-100 tc purple-blue f3 bold05 bg-white pv2 tracked'>分类情况</header>
         <section class='w-100'>
         ${ this.state.loading ?
           html`
@@ -441,14 +442,73 @@ class Component extends Nanocomponent {
   }
 }
 
+class CBox extends Nanocomponent {
+  constructor (state, emit) {
+    super()
+    this.state = state
+    this.emit = emit
+    this.qXJJG = new QXJJG(state, emit)
+    this.qCZ = new QCZ(state, emit)
+  }
+
+  createElement () {
+    if (this.state.page === 'record') {
+      return this.qXJJG.render()
+    } else if (this.state.page === 'weight') {
+      return this.qCZ.render()
+    }
+  }
+
+  update () {
+    return true
+  }
+}
+
+class Footer extends Nanocomponent {
+  constructor (state, emit, cBox) {
+    super()
+    this.cBox = cBox
+    this.state = state
+    this.emit = emit
+  }
+
+  createElement () {
+    return html`
+      <footer
+        class='bg-white w-100 pv012 tc flex justify-around fixed bottom-0'>
+        <i class='icon icon_add ${this.state.page === 'record' ? 'icon_record_active animated pulse' : 'icon_record'}'
+          onclick=${this.handleClick('record')}></i>
+        <i class='icon icon_line ${this.state.page === 'weight' ? 'icon_weight_active animated pulse' : 'icon_weight'}'
+          onclick=${this.handleClick('weight')}></i>
+      </footer>
+    `
+  }
+
+  handleClick (page) {
+    return () => {
+      if (page !== this.state.page) {
+        this.emit('state:page', page)
+        this.cBox.render()
+        this.render()
+      }
+    }
+  }
+
+  update () {
+    return true
+  }
+}
+
 function view (state, emit) {
   if (state.title !== TITLE) emit(state.events.DOMTITLECHANGE, TITLE)
 
-  var component = new Component(state, emit)
+  var cBox = new CBox(state, emit)
+  var footer = new Footer(state, emit, cBox)
 
   return html`
     <body class='w-100 flex flex-column bg-n-white'>
-      ${component.render()}
+      ${cBox.render()}
+      ${footer.render()}
     </body>
   `
 }
