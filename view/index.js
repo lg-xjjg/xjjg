@@ -165,7 +165,7 @@ class ReportList extends Nanocomponent {
       `
     } else {
       return html`
-        <ul class='w-100 pa0 mt0'>
+        <ul class='w-100 pa0 mt0 h5 overflow-scroll'>
           <li class='flex f7'>
             <div class='flex w-20 h2 ba bw05 b--purple-blue items-center justify-center'><span>日期</span></div>
             <div class='flex w-10 h2 bt bb br bw05 b--purple-blue items-center justify-center'><span>情况</span></div>
@@ -309,7 +309,7 @@ class PersonList extends Nanocomponent {
             <span>差: <b class='purple-blue'>${this.state.person.score3}</b></span>
           </div>
         </div>
-        <ul class='w-90 pa0'>
+        <ul class='w-90 pa0 h5 overflow-scroll'>
           <li class='flex'>
             <div class='flex w-50 h2 ba bw05 b--purple-blue items-center justify-center'><span>日期</span></div>
             <div class='flex w-50 h2 bt bb br bw05 b--purple-blue items-center justify-center'><span>结果</span></div>
@@ -395,7 +395,7 @@ class CunminList extends Nanocomponent {
         })
       }
       return html`
-        <ul class='w-100 pa0 mt1'>
+        <ul class='w-100 pa0 mt1 h5 overflow-scroll'>
           ${this.qNormal.render()}
           ${this.qOption.render()}
           ${!this.state.showTime ?
@@ -492,7 +492,7 @@ class VillageList extends Nanocomponent {
 
   createElement () {
     return html`
-      <ul class='w-100 pa0'>
+      <ul class='w-100 pa0 h5 overflow-scroll'>
         <li class='flex'>
           <div class='flex w-25 h2 ba bw05 b--purple-blue items-center justify-center'><span>排名</span></div>
           <div class='flex w-25 h2 bt bb br bw05 b--purple-blue items-center justify-center'><span>村庄</span></div>
