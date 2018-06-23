@@ -8,8 +8,11 @@ module.exports = (state, emitter) => {
     status: 0,
     village: [],
     villageId: null,
+    showUnNormal: false,
+    showTime: false,
     reportList: [],
     tab: true,
+    today: null,
     cunmin: [],
     person: {},
     photo: null
@@ -17,7 +20,7 @@ module.exports = (state, emitter) => {
 
   emitter.on('state:reportList', reportList => {
     reportList = reportList.filter(r => {
-      return r.score !== 1
+      return r.score !== 1 && r.score !== 10
     })
 
     reportList = reportList.map(d => {
@@ -57,6 +60,14 @@ module.exports = (state, emitter) => {
     state.page = page
   })
 
+  emitter.on('state:showUnNormal', showUnNormal => {
+    state.showUnNormal = showUnNormal
+  })
+
+  emitter.on('state:showTime', showTime => {
+    state.showTime = showTime
+  })
+
   emitter.on('state:tab', tab => {
     state.tab = tab
   })
@@ -66,15 +77,16 @@ module.exports = (state, emitter) => {
   })
 
   emitter.on('state:village', datas => {
-    datas = datas.sort((a, b) => {
-      return (b.score1 * 2 - b.score2  - b.score3 * 2) - (a.score1 * 2 - a.score2  - a.score3 * 2)
-    })
-
     datas = datas.map(d => {
       var t = d.score1 + d.score2 + d.score3
-      d.good = ((d.score1 / t) * 100).toFixed(1) + '%'
+      d.goodRate = d.score1 / t
+      d.good = (d.goodRate * 100).toFixed(1) + '%'
       d.join = (((d.score1 + d.score2) / t) * 100).toFixed(1) + '%'
       return d
+    })
+
+    datas = datas.sort((a, b) => {
+      return b.goodRate - a.goodRate
     })
 
     state.village = datas
@@ -84,10 +96,19 @@ module.exports = (state, emitter) => {
     state.photo = photo
   })
 
+  emitter.on('state:today', today => {
+    state.today = today
+  })
+
   emitter.on('state:cunmin', datas => {
     datas = datas.map(d => {
       d.total = d.score1 * 2 - d.score2 - d.score3 * 2
+      d.time = d.score1 + d.score2 + d.score3 + d.score10
       return d
+    })
+
+    datas = datas.sort((a, b) => {
+      return b.total - a.total
     })
 
     state.cunmin = datas

@@ -9,6 +9,144 @@ var TITLE = '统计结果'
 
 module.exports = view
 
+class QTotal extends Nanocomponent {
+  constructor (state, emit, cunminList) {
+    super()
+    this.state = state
+    this.emit = emit
+  }
+
+  createElement () {
+    return html`
+      <div class='w-100 f5 mv3 ml2'>
+        <p>今日总体情况:</p>
+        ${this.state.today ?
+          html`
+            <ul class='pa0 list'>
+              <li class='dib mr2'>好: ${this.state.today.score1}户</li>
+              <li class='dib mr2'>中: ${this.state.today.score2}户</li>
+              <li class='dib mr2'>差: ${this.state.today.score3}户</li>
+              <li class='dib mr2'>没有垃圾: ${this.state.today.score10}户</li>
+            </ul>
+          `:
+          html`
+            <div></div>
+          `
+        }
+      </div>
+    `
+  }
+
+  load () {
+    var midnight = new Date()
+
+    midnight.setHours(0,0,0,0)
+
+    getData('polling', JSON.stringify({
+      villageId: this.state.villageId,
+      date: { $gt: midnight.getTime() }
+    }), datas => {
+      var score1 = 0
+      var score2 = 0
+      var score3 = 0
+      var score10 = 0
+
+      datas.forEach(d => {
+        if (d.score === 1) {
+          score1++
+        }
+
+        if (d.score === 2) {
+          score2++
+        }
+
+        if (d.score === 3) {
+          score3++
+        }
+
+        if (d.score === 10) {
+          score10++
+        }
+      })
+
+      this.emit('state:today', {score1, score2, score3, score10})
+      this.render()
+    }, err => {
+      console.log(err)
+    })
+  }
+
+  update () {
+    return true
+  }
+}
+
+class QNormal extends Nanocomponent {
+  constructor (state, emit, cunminList) {
+    super()
+    this.state = state
+    this.emit = emit
+    this.handleClick = this.handleClick.bind(this)
+    this.cunminList = cunminList
+  }
+
+  createElement () {
+    return html`
+      <div class='w-100 f4 flex items-center mv3 ml2'>
+        <span>是否显示非常住户:</span>
+        <div
+          onclick=${this.handleClick}
+          class='ml2 bg-white br2 b--blue ba bw015 w2 h2 flex items-center justify-center'>
+          ${this.state.showUnNormal ? html`<i class='icon icon_agree icon-25'></i>` : html`<div></div>`}
+        </div>
+      </div>
+    `
+  }
+
+  handleClick () {
+    var showUnNormal = !this.state.showUnNormal
+    this.emit('state:showUnNormal', showUnNormal)
+    this.cunminList.render()
+  }
+
+  update () {
+    return true
+  }
+}
+
+class QOption extends Nanocomponent {
+  constructor (state, emit, cunminList) {
+    super()
+    this.state = state
+    this.emit = emit
+    this.handleClick = this.handleClick.bind(this)
+    this.cunminList = cunminList
+  }
+
+  createElement () {
+    return html`
+      <div class='w-100 f4 flex items-center mv3 ml2'>
+        <span>是否显示次数:</span>
+        <div
+          onclick=${this.handleClick}
+          class='ml2 bg-white br2 b--blue ba bw015 w2 h2 flex items-center justify-center'>
+          ${this.state.showTime ? html`<i class='icon icon_agree icon-25'></i>` : html`<div></div>`}
+        </div>
+      </div>
+    `
+  }
+
+  handleClick () {
+    var showTime = !this.state.showTime
+    this.emit('state:showTime', showTime)
+    this.cunminList.render()
+  }
+
+  update () {
+    return true
+  }
+}
+
 class ReportList extends Nanocomponent {
   constructor (state, emit, qBox) {
     super()
@@ -54,8 +192,14 @@ class ReportList extends Nanocomponent {
   load () {
     this.emit('state:loading', true)
     this.render()
+
+    var midnight = new Date()
+
+    midnight.setHours(0,0,0,0)
+
     getData('polling', JSON.stringify({
-      villageId: this.state.villageId
+      villageId: this.state.villageId,
+      date: { $gt: midnight.getTime() - 3 * 24 * 36 * 100000 }
     }), datas => {
       this.emit('state:reportList', datas)
       this.emit('state:loading', false)
@@ -92,7 +236,7 @@ class QTab extends Nanocomponent {
         <div
           onclick=${this.handleClick(false)}
           class='h2 flex w-50 b--blue bw1 items-center tc ${!tab ? "bb br bl" : "o-50"}'>
-          <p class='w-100'>不合格清单</p>
+          <p class='w-100'>三日内不合格名单</p>
         </div>
       </section>
     `
@@ -224,6 +368,8 @@ class CunminList extends Nanocomponent {
     this.state = state
     this.emit = emit
     this.handleClick = this.handleClick.bind(this)
+    this.qNormal = new QNormal(state, emit, this)
+    this.qOption = new QOption(state, emit, this)
   }
 
   createElement () {
@@ -236,17 +382,41 @@ class CunminList extends Nanocomponent {
         </ul>
       `
     } else {
+      var cunmins = this.state.cunmin.filter(d => {
+        if (!d.isNormal && this.state.showUnNormal) {
+          return false
+        }
+        return true
+      })
+
+      if (this.state.showTime) {
+        cunmins = cunmins.sort((a, b) => {
+          return a.time - b.time
+        })
+      }
       return html`
-        <ul class='w-100 pa0 mt0'>
-          <li class='flex'>
-            <div class='flex w-16 h2 ba bw05 b--purple-blue items-center justify-center'><span>排名</span></div>
-            <div class='flex w-16 h2 bt bb br bw05 b--purple-blue items-center justify-center'><span>姓名</span></div>
-            <div class='flex w-16 h2 bt bb br bw05 b--purple-blue items-center justify-center'><span>上</span></div>
-            <div class='flex w-16 h2 bt bb br bw05 b--purple-blue items-center justify-center'><span>中</span></div>
-            <div class='flex w-16 h2 bt bb br bw05 b--purple-blue items-center justify-center'><span>下</span></div>
-            <div class='flex w-16 h2 bt bb br bw05 b--purple-blue items-center justify-center'><span>总分</span></div>
-          </li>
-          ${this.state.cunmin.map((d, i) => html`
+        <ul class='w-100 pa0 mt1'>
+          ${this.qNormal.render()}
+          ${this.qOption.render()}
+          ${!this.state.showTime ?
+            html`
+              <li class='flex'>
+                <div class='flex w-16 h2 ba bw05 b--purple-blue items-center justify-center'><span>排名</span></div>
+                <div class='flex w-16 h2 bt bb br bw05 b--purple-blue items-center justify-center'><span>姓名</span></div>
+                <div class='flex w-16 h2 bt bb br bw05 b--purple-blue items-center justify-center'><span>上</span></div>
+                <div class='flex w-16 h2 bt bb br bw05 b--purple-blue items-center justify-center'><span>中</span></div>
+                <div class='flex w-16 h2 bt bb br bw05 b--purple-blue items-center justify-center'><span>下</span></div>
+                <div class='flex w-16 h2 bt bb br bw05 b--purple-blue items-center justify-center'><span>总分</span></div>
+              </li>
+            ` :
+            html`
+              <li class='flex'>
+                <div class='flex w-50 h2 ba bw05 b--purple-blue items-center justify-center'><span>姓名</span></div>
+                <div class='flex w-50 h2 bt bb br bw05 b--purple-blue items-center justify-center'><span>次数</span></div>
+              </li>
+            `
+          }
+          ${!this.state.showTime ? cunmins.map((d, i) => html`
             <li class='flex f7'>
               <div class='flex w-16 h2 bb br bl bw05 b--purple-blue items-center justify-center'><span>${i + 1}</span></div>
               <div
@@ -259,6 +429,15 @@ class CunminList extends Nanocomponent {
               <div class='flex w-16 h2 bb br bw05 b--purple-blue items-center justify-center'><span>${d.score3}</span></div>
               <div class='flex w-16 h2 bb br bw05 b--purple-blue items-center justify-center'><span>${d.total}</span></div>
             </li>
+          `) : cunmins.map((d, i) => html`
+          <li class='flex f7'>
+            <div
+              onclick=${this.handleClick(d.id, d.name , d.phone)}
+              class='flex w-50 h2 bb br bl bw05 b--purple-blue items-center justify-center purple-blue'>
+              <span>${d.name}</span>
+            </div>
+            <div class='flex w-50 h2 bb br bw05 b--purple-blue items-center justify-center'><span>${d.time}</span></div>
+          </li>
           `)}
         </ul>
       `
@@ -358,12 +537,14 @@ class QBox extends Nanocomponent {
     this.cunminList = new CunminList(state, emit)
     this.reportList = new ReportList(state, emit)
     this.back = this.back.bind(this)
+    this.qTotal = new QTotal(state, emit)
   }
 
   createElement () {
     return html`
       <section class='w-100'>
         <p class='f4 purple-blue ml2' onclick=${this.back()}>返回</p>
+        ${this.qTotal.render()}
         ${this.qTab.render()}
         ${this.state.tab ? this.cunminList.render() : this.reportList.render()}
       </section>
