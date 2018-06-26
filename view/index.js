@@ -27,6 +27,10 @@ class QTotal extends Nanocomponent {
               <li class='dib mr2'>中: ${this.state.today.score2}户</li>
               <li class='dib mr2'>差: ${this.state.today.score3}户</li>
               <li class='dib mr2'>没有垃圾: ${this.state.today.score10}户</li>
+              <p class='f5'>
+                合格率：<span class='purple-blue'>${this.state.today.hg}</span>
+                参与率：<span class='purple-blue'>${this.state.today.cy}</span>
+              </p>
             </ul>
           `:
           html`
@@ -68,8 +72,17 @@ class QTotal extends Nanocomponent {
           score10++
         }
       })
+      var t = score1 + score2 + score3 + score10
 
-      this.emit('state:today', {score1, score2, score3, score10})
+      var hg = ((score1 / t) * 100).toFixed(1) + '%'
+      var cy = (((score1 + score2) / t) * 100).toFixed(1) + '%'
+
+      if (t === 0) {
+        hg = '0%'
+        cy = '0%'
+      }
+
+      this.emit('state:today', {score1, score2, score3, score10, hg, cy})
       this.render()
     }, err => {
       console.log(err)
@@ -178,7 +191,7 @@ class ReportList extends Nanocomponent {
               <li class='flex f7'>
                 <div class='flex w-20 h2 bb br bl bw05 b--purple-blue items-center justify-center'><span>${r.dateFormat}</span></div>
                 <div class='flex w-10 h2 bb br bw05 b--purple-blue items-center justify-center'><span>${r.score}</span></div>
-                <div class='flex w-20 h2 bb br bw05 b--purple-blue items-center justify-center'><span>${r.num}</span></div>
+                <div class='flex w-20 h2 bb br bw05 b--purple-blue items-center justify-center'><span>${r.area + r.num}</span></div>
                 <div class='flex w-20 h2 bb br bw05 b--purple-blue items-center justify-center'><span>${r.name}</span></div>
                 <div class='flex w-30 h2 bb br bw05 b--purple-blue items-center justify-center'><span>${r.phone ? r.phone : '暂无'}</span></div>
               </li>

@@ -29,24 +29,26 @@ class DeleveryList extends Nanocomponent {
       return html`
         <ul class='w-100 pa0'>
           <li class='flex'>
-            <div class='flex w-16 h2 ba bw05 b--purple-blue items-center justify-center'><span>排名</span></div>
-            <div class='flex w-16 h2 bt bb br bw05 b--purple-blue items-center justify-center'><span>姓名</span></div>
-            <div class='flex w-16 h2 bt bb br bw05 b--purple-blue items-center justify-center'><span>优</span></div>
-            <div class='flex w-16 h2 bt bb br bw05 b--purple-blue items-center justify-center'><span>中</span></div>
-            <div class='flex w-16 h2 bt bb br bw05 b--purple-blue items-center justify-center'><span>差</span></div>
-            <div class='flex w-16 h2 bt bb br bw05 b--purple-blue items-center justify-center'><span>拒分拣</span></div>
+            <div class='flex w-14 h2 ba bw05 b--purple-blue items-center justify-center'><span>排名</span></div>
+            <div class='flex w-14 h2 bt bb br bw05 b--purple-blue items-center justify-center'><span>姓名</span></div>
+            <div class='flex w-14 h2 bt bb br bw05 b--purple-blue items-center justify-center'><span>优</span></div>
+            <div class='flex w-14 h2 bt bb br bw05 b--purple-blue items-center justify-center'><span>中</span></div>
+            <div class='flex w-14 h2 bt bb br bw05 b--purple-blue items-center justify-center'><span>差</span></div>
+            <div class='flex w-14 h2 bt bb br bw05 b--purple-blue items-center justify-center'><span>拒分拣</span></div>
+            <div class='flex w-14 h2 bt bb br bw05 b--purple-blue items-center justify-center'><span>总分</span></div>
           </li>
           ${this.state.delevery.map((d, i) => html`
             <li class='flex f7'>
-              <div class='flex w-16 h2 bb br bl bw05 b--purple-blue items-center justify-center'><span>${i + 1}</span></div>
+              <div class='flex w-14 h2 bb br bl bw05 b--purple-blue items-center justify-center'><span>${i + 1}</span></div>
               <div
-                class='flex w-16 h2 bb br bw05 b--purple-blue items-center justify-center'>
+                class='flex w-14 h2 bb br bw05 b--purple-blue items-center justify-center'>
                 <span>${d.name}</span>
               </div>
-              <div class='flex w-16 h2 bb br bw05 b--purple-blue items-center justify-center'><span>${d.score1}</span></div>
-              <div class='flex w-16 h2 bb br bw05 b--purple-blue items-center justify-center'><span>${d.score2}</span></div>
-              <div class='flex w-16 h2 bb br bw05 b--purple-blue items-center justify-center'><span>${d.score3}</span></div>
-              <div class='flex w-16 h2 bb br bw05 b--purple-blue items-center justify-center'><span>${d.score4}</span></div>
+              <div class='flex w-14 h2 bb br bw05 b--purple-blue items-center justify-center'><span>${d.score1}</span></div>
+              <div class='flex w-14 h2 bb br bw05 b--purple-blue items-center justify-center'><span>${d.score2}</span></div>
+              <div class='flex w-14 h2 bb br bw05 b--purple-blue items-center justify-center'><span>${d.score3}</span></div>
+              <div class='flex w-14 h2 bb br bw05 b--purple-blue items-center justify-center'><span>${d.score4}</span></div>
+              <div class='flex w-14 h2 bb br bw05 b--purple-blue items-center justify-center'><span>${d.total}</span></div>
             </li>
           `)}
         </ul>
@@ -102,6 +104,8 @@ class DrateList extends Nanocomponent {
     super()
     this.state = state
     this.emit = emit
+    this.handleClick = this.handleClick.bind(this)
+    this.back = this.back.bind(this)
   }
 
   createElement () {
@@ -113,7 +117,7 @@ class DrateList extends Nanocomponent {
           </div>
         </ul>
       `
-    } else {
+    } else if (this.state.czstatus === 1){
       return html`
         <ul class='w-100 pa0'>
           <li class='flex'>
@@ -124,12 +128,43 @@ class DrateList extends Nanocomponent {
           ${this.state.drate.map((d, i) => html`
             <li class='flex'>
               <div class='flex w-33 h2 bb br bl bw05 b--purple-blue items-center justify-center'><span>${i + 1}</span></div>
-              <div class='flex w-33 h2 bb br bw05 b--purple-blue items-center justify-center'><span>${d.name}</span></div>
+              <div
+                onclick=${this.handleClick(d)}
+                class='flex w-33 h2 bb br bw05 b--purple-blue items-center justify-center purple-blue'>
+                <span>${d.name}</span>
+              </div>
               <div class='flex w-33 h2 bb br bw05 b--purple-blue items-center justify-center'><span>${d.num}</span></div>
             </li>
           `)}
         </ul>
       `
+    } else if (this.state.czstatus === 2){
+      return html`
+        <ul class='w-100 pa0'>
+          <p class='f4 purple-blue ml2' onclick=${this.back()}>返回</p>
+          <p class='f4 ml2'>可腐烂：<span class='purple-blue'>${this.state.czdetail.rot}kg</span></p>
+          <p class='f4 ml2'>不可腐烂：<span class='purple-blue'>${this.state.czdetail.unrot}kg</span></p>
+          <p class='f4 ml2'>可回收：<span class='purple-blue'>${this.state.czdetail.recycle}kg</span></p>
+          <p class='f4 ml2'>有毒有害：<span class='purple-blue'>${this.state.czdetail.harm}kg</span></p>
+          <p class='f4 ml2'>总重：<span class='purple-blue'>${this.state.czdetail.total}kg</span></p>
+        </ul>
+      `
+    }
+  }
+
+  back () {
+    return e => {
+      this.emit('state:czstatus', 1)
+      this.emit('render')
+      this.render()
+    }
+  }
+
+  handleClick (d) {
+    return () => {
+      this.emit('state:czstatus', 2)
+      this.emit('state:czdetail', d)
+      this.render()
     }
   }
 
