@@ -31,9 +31,9 @@ class DeleveryList extends Nanocomponent {
           <li class='flex'>
             <div class='flex w-16 h2 ba bw05 b--purple-blue items-center justify-center'><span>排名</span></div>
             <div class='flex w-16 h2 bt bb br bw05 b--purple-blue items-center justify-center'><span>姓名</span></div>
-            <div class='flex w-16 h2 bt bb br bw05 b--purple-blue items-center justify-center'><span>上</span></div>
+            <div class='flex w-16 h2 bt bb br bw05 b--purple-blue items-center justify-center'><span>优</span></div>
             <div class='flex w-16 h2 bt bb br bw05 b--purple-blue items-center justify-center'><span>中</span></div>
-            <div class='flex w-16 h2 bt bb br bw05 b--purple-blue items-center justify-center'><span>下</span></div>
+            <div class='flex w-16 h2 bt bb br bw05 b--purple-blue items-center justify-center'><span>差</span></div>
             <div class='flex w-16 h2 bt bb br bw05 b--purple-blue items-center justify-center'><span>拒分拣</span></div>
           </li>
           ${this.state.delevery.map((d, i) => html`

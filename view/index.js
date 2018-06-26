@@ -93,7 +93,7 @@ class QNormal extends Nanocomponent {
   createElement () {
     return html`
       <div class='w-100 f4 flex items-center mv3 ml2'>
-        <span>是否显示非常住户:</span>
+        <span>显示非常住户:</span>
         <div
           onclick=${this.handleClick}
           class='ml2 bg-white br2 b--blue ba bw015 w2 h2 flex items-center justify-center'>
@@ -126,7 +126,7 @@ class QOption extends Nanocomponent {
   createElement () {
     return html`
       <div class='w-100 f4 flex items-center mv3 ml2'>
-        <span>是否显示次数:</span>
+        <span>显示次数:</span>
         <div
           onclick=${this.handleClick}
           class='ml2 bg-white br2 b--blue ba bw015 w2 h2 flex items-center justify-center'>
@@ -319,7 +319,7 @@ class PersonList extends Nanocomponent {
               <div class='flex w-50 h2 bl bb br bw05 b--purple-blue items-center justify-center'><span>${d.dateFormat}</span></div>
               <div class='flex w-50 h2 bb br bw05 b--purple-blue items-center justify-center'>
                 <span onclick=${this.clickPhoto(d)} class='${d.photo ? "purple-blue" : ""}'>
-                  ${d.score === 1 ? '优' : (d.score === 2 ? '中' : '差')}
+                  ${d.score === 1 ? '优' : (d.score === 2 ? '中' : (d.score === 3 ? '差' : '没有垃圾'))}
                 </span>
               </div>
             </li>
@@ -383,7 +383,7 @@ class CunminList extends Nanocomponent {
       `
     } else {
       var cunmins = this.state.cunmin.filter(d => {
-        if (!d.isNormal && this.state.showUnNormal) {
+        if (!d.isNormal && !this.state.showUnNormal) {
           return false
         }
         return true
@@ -401,39 +401,45 @@ class CunminList extends Nanocomponent {
           ${!this.state.showTime ?
             html`
               <li class='flex'>
-                <div class='flex w-16 h2 ba bw05 b--purple-blue items-center justify-center'><span>排名</span></div>
-                <div class='flex w-16 h2 bt bb br bw05 b--purple-blue items-center justify-center'><span>姓名</span></div>
-                <div class='flex w-16 h2 bt bb br bw05 b--purple-blue items-center justify-center'><span>上</span></div>
-                <div class='flex w-16 h2 bt bb br bw05 b--purple-blue items-center justify-center'><span>中</span></div>
-                <div class='flex w-16 h2 bt bb br bw05 b--purple-blue items-center justify-center'><span>下</span></div>
-                <div class='flex w-16 h2 bt bb br bw05 b--purple-blue items-center justify-center'><span>总分</span></div>
+                <div class='flex w-14 h2 ba bw05 b--purple-blue items-center justify-center'><span>排名</span></div>
+                <div class='flex w-14 h2 bt bb br bw05 b--purple-blue items-center justify-center'><span>编号</span></div>
+                <div class='flex w-14 h2 bt bb br bw05 b--purple-blue items-center justify-center'><span>姓名</span></div>
+                <div class='flex w-14 h2 bt bb br bw05 b--purple-blue items-center justify-center'><span>优</span></div>
+                <div class='flex w-14 h2 bt bb br bw05 b--purple-blue items-center justify-center'><span>中</span></div>
+                <div class='flex w-14 h2 bt bb br bw05 b--purple-blue items-center justify-center'><span>差</span></div>
+                <div class='flex w-14 h2 bt bb br bw05 b--purple-blue items-center justify-center'><span>总分</span></div>
               </li>
             ` :
             html`
               <li class='flex'>
-                <div class='flex w-50 h2 ba bw05 b--purple-blue items-center justify-center'><span>姓名</span></div>
-                <div class='flex w-50 h2 bt bb br bw05 b--purple-blue items-center justify-center'><span>次数</span></div>
+                <div class='flex w-33 h2 ba bw05 b--purple-blue items-center justify-center'><span>编号</span></div>
+                <div class='flex w-33 h2 bt bb br bw05 b--purple-blue items-center justify-center'><span>姓名</span></div>
+                <div class='flex w-33 h2 bt bb br bw05 b--purple-blue items-center justify-center'><span>次数</span></div>
               </li>
             `
           }
           ${!this.state.showTime ? cunmins.map((d, i) => html`
             <li class='flex f7'>
-              <div class='flex w-16 h2 bb br bl bw05 b--purple-blue items-center justify-center'><span>${i + 1}</span></div>
+              <div class='flex w-14 h2 bb br bl bw05 b--purple-blue items-center justify-center'><span>${i + 1}</span></div>
+              <div class='flex w-14 h2 bb br bw05 b--purple-blue items-center justify-center'><span>${d.area + d.num}</span></div>
               <div
                 onclick=${this.handleClick(d.id, d.name , d.phone)}
-                class='flex w-16 h2 bb br bw05 b--purple-blue items-center justify-center purple-blue'>
+                class='flex w-14 h2 bb br bw05 b--purple-blue items-center justify-center purple-blue'>
                 <span>${d.name}</span>
               </div>
-              <div class='flex w-16 h2 bb br bw05 b--purple-blue items-center justify-center'><span>${d.score1}</span></div>
-              <div class='flex w-16 h2 bb br bw05 b--purple-blue items-center justify-center'><span>${d.score2}</span></div>
-              <div class='flex w-16 h2 bb br bw05 b--purple-blue items-center justify-center'><span>${d.score3}</span></div>
-              <div class='flex w-16 h2 bb br bw05 b--purple-blue items-center justify-center'><span>${d.total}</span></div>
+              <div class='flex w-14 h2 bb br bw05 b--purple-blue items-center justify-center'><span>${d.score1}</span></div>
+              <div class='flex w-14 h2 bb br bw05 b--purple-blue items-center justify-center'><span>${d.score2}</span></div>
+              <div class='flex w-14 h2 bb br bw05 b--purple-blue items-center justify-center'><span>${d.score3}</span></div>
+              <div class='flex w-14 h2 bb br bw05 b--purple-blue items-center justify-center'><span>${d.total}</span></div>
             </li>
           `) : cunmins.map((d, i) => html`
           <li class='flex f7'>
+            <div class='flex w-50 h2 bb br bl bw05 b--purple-blue items-center justify-center'>
+              <span>${d.area + d.num}</span>
+            </div>
             <div
               onclick=${this.handleClick(d.id, d.name , d.phone)}
-              class='flex w-50 h2 bb br bl bw05 b--purple-blue items-center justify-center purple-blue'>
+              class='flex w-50 h2 bb br bw05 b--purple-blue items-center justify-center purple-blue'>
               <span>${d.name}</span>
             </div>
             <div class='flex w-50 h2 bb br bw05 b--purple-blue items-center justify-center'><span>${d.time}</span></div>
