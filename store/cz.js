@@ -25,7 +25,7 @@ module.exports = (state, emitter) => {
     var drate = datas.map(d => {
       var total = d.rot + d.unrot + d.harm + d.recycle
       var rest = total - d.unrot
-
+      var num = total ? ((rest / total) * 100).toFixed(1) + '%' : '0%'
       return {
         name: d.name,
         rot: d.rot,
@@ -34,7 +34,7 @@ module.exports = (state, emitter) => {
         recycle: d.recycle,
         total: total,
         n: rest / total,
-        num: ((rest / total) * 100).toFixed(1) + '%'
+        num: num
       }
     })
 

@@ -28,7 +28,7 @@ class DeleveryList extends Nanocomponent {
     } else {
       return html`
         <ul class='w-100 pa0'>
-          <li class='flex'>
+          <li class='flex f7'>
             <div class='flex w-14 h2 ba bw05 b--purple-blue items-center justify-center'><span>排名</span></div>
             <div class='flex w-14 h2 bt bb br bw05 b--purple-blue items-center justify-center'><span>姓名</span></div>
             <div class='flex w-14 h2 bt bb br bw05 b--purple-blue items-center justify-center'><span>优</span></div>
