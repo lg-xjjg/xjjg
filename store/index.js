@@ -80,7 +80,7 @@ module.exports = (state, emitter) => {
     datas = datas.map(d => {
       var t = d.score1 + d.score2 + d.score3
 
-      d.goodRate = d.score1 / t
+      d.goodRate = t === 0 ? 0 : d.score1 / t
       d.good = (d.goodRate * 100).toFixed(1) + '%'
       d.join = (((d.score1 + d.score2) / t) * 100).toFixed(1) + '%'
 
