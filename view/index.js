@@ -4,7 +4,6 @@ var ImageCompressor = require('image-compressor.js')
 var QCZ = require('./cz.js')
 const { getData } = require('../fetch')
 
-
 var TITLE = '统计结果'
 
 module.exports = view

@@ -19,7 +19,7 @@ class DeleveryList extends Nanocomponent {
   createElement () {
     if (!this.state.delevery) {
       return html`
-        <ul class='w-100 pa0'>
+        <ul class='w-100 pa0 h5_5'>
           <div class='tc mt4'>
             <i class='icon icon_spinner icon-40'></i>
           </div>
@@ -27,7 +27,7 @@ class DeleveryList extends Nanocomponent {
       `
     } else {
       return html`
-        <ul class='w-100 pa0'>
+        <ul class='w-100 pa0 h5_5'>
           <li class='flex f7'>
             <div class='flex w-14 h2 ba bw05 b--purple-blue items-center justify-center'><span>排名</span></div>
             <div class='flex w-14 h2 bt bb br bw05 b--purple-blue items-center justify-center'><span>姓名</span></div>
@@ -111,7 +111,7 @@ class DrateList extends Nanocomponent {
   createElement () {
     if (!this.state.drate) {
       return html`
-        <ul class='w-100 pa0'>
+        <ul class='w-100 pa0 h5_5'>
           <div class='tc mt4'>
             <i class='icon icon_spinner icon-40'></i>
           </div>
@@ -119,7 +119,7 @@ class DrateList extends Nanocomponent {
       `
     } else if (this.state.czstatus === 1){
       return html`
-        <ul class='w-100 pa0'>
+        <ul class='w-100 pa0 h5_5'>
           <li class='flex'>
             <div class='flex w-33 h2 ba bw05 b--purple-blue items-center justify-center'><span>排名</span></div>
             <div class='flex w-33 h2 bt bb br bw05 b--purple-blue items-center justify-center'><span>村庄</span></div>

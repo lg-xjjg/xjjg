@@ -33,7 +33,7 @@ module.exports = (state, emitter) => {
         harm: d.harm,
         recycle: d.recycle,
         total: total,
-        n: rest / total,
+        n: total === 0 ? -1 : rest / total,
         num: num
       }
     })
