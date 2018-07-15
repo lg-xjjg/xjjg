@@ -55,6 +55,7 @@ class QTotal extends Nanocomponent {
       var score10 = 0
 
       datas.forEach(d => {
+        console.log(d.date, d.name)
         if (d.score === 1) {
           score1++
         }
@@ -407,7 +408,7 @@ class CunminList extends Nanocomponent {
         })
       }
       return html`
-        <ul class='w-100 pa0 mt1 h5 overflow-scroll'>
+        <ul class='w-100 pa0 mt1 h5 pb5 overflow-scroll'>
           ${this.qNormal.render()}
           ${this.qOption.render()}
           ${!this.state.showTime ?
