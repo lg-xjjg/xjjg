@@ -141,7 +141,7 @@ class DrateList extends Nanocomponent {
     } else if (this.state.czstatus === 2){
       return html`
         <ul class='w-100 pa0'>
-          <p class='f4 purple-blue ml2' onclick=${this.back()}>返回</p>
+          <button class='f4 mt2 ml2 mb2 bn bg-purple-blue h2 br2 white' onclick=${this.back()}>返回</button>
           <p class='f4 ml2'>可腐烂：<span class='purple-blue'>${this.state.czdetail.rot}kg</span></p>
           <p class='f4 ml2'>不可腐烂：<span class='purple-blue'>${this.state.czdetail.unrot}kg</span></p>
           <p class='f4 ml2'>可回收：<span class='purple-blue'>${this.state.czdetail.recycle}kg</span></p>

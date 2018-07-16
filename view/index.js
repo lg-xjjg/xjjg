@@ -16,12 +16,17 @@ class QTotal extends Nanocomponent {
   }
 
   createElement () {
+    var d = new Date()
+    var date = d.getMonth() + 1 + '月' + d.getDate() + '日 总体情况'
+
     return html`
       <div class='w-100 f5 mv3 ml2'>
-        <p>今日总体情况:</p>
+        <p>${date}:</p>
         ${this.state.today ?
-          html`
-            <ul class='pa0 list'>
+          html`            
+            <ul class='pa0 list'>        
+              <p class='db mr2'>总户数: ${this.state.today.l}户</p>
+              <p class='db mr2'>巡检户数: ${this.state.today.t}户</p>                  
               <li class='dib mr2'>好: ${this.state.today.score1}户</li>
               <li class='dib mr2'>中: ${this.state.today.score2}户</li>
               <li class='dib mr2'>差: ${this.state.today.score3}户</li>
@@ -81,9 +86,16 @@ class QTotal extends Nanocomponent {
         hg = '0%'
         cy = '0%'
       }
+      getData('cunmin', JSON.stringify({
+        villageId: this.state.villageId
+      }), datas => {
+        var l = datas.length
+        this.emit('state:today', {score1, score2, score3, score10, hg, cy, t, l})
+        this.render()
+      }, err => {
+        console.log(err)
+      })
 
-      this.emit('state:today', {score1, score2, score3, score10, hg, cy})
-      this.render()
     }, err => {
       console.log(err)
     })
@@ -280,7 +292,7 @@ class QPhoto extends Nanocomponent {
     return html`
       <div class='w-100 flex flex-column flex-auto items-center'>
         <div class='w-90'>
-          <p class='f4 purple-blue' onclick=${this.back()}>返回</p>
+          <button class='f4 mt2 mb2 bn bg-purple-blue h2 br2 white' onclick=${this.back()}>返回</button>
           <img src=${this.state.photo} />
         </div>
       </div>
@@ -313,7 +325,7 @@ class PersonList extends Nanocomponent {
       <div class='w-100 flex flex-column flex-auto items-center'>
 
         <div class='w-90'>
-          <p class='f4 purple-blue' onclick=${this.back()}>返回</p>
+          <button class='f4 mt2 bn bg-purple-blue h2 br2 white' onclick=${this.back()}>返回</button>
           <p class='f5'>姓名: <span class='f4 purple-blue'>${this.state.person.name}</span></p>
           <p class='f5'>手机: <span class='f4 purple-blue'>${this.state.person.phone ? this.state.person.phone : '暂无'}</span></p>
           <div class='w-70 flex justify-between'>
@@ -562,7 +574,7 @@ class QBox extends Nanocomponent {
   createElement () {
     return html`
       <section class='w-100'>
-        <p class='f4 purple-blue ml2' onclick=${this.back()}>返回</p>
+        <button class='f4 ml2 mt2 bn bg-purple-blue h2 br2 white' onclick=${this.back()}>返回</button>
         ${this.qTotal.render()}
         ${this.qTab.render()}
         ${this.state.tab ? this.cunminList.render() : this.reportList.render()}
