@@ -204,7 +204,11 @@ class ReportList extends Nanocomponent {
                 <div class='flex w-20 h2 bb br bl bw05 b--purple-blue items-center justify-center'><span>${r.dateFormat}</span></div>
                 <div class='flex w-10 h2 bb br bw05 b--purple-blue items-center justify-center'><span>${r.score}</span></div>
                 <div class='flex w-20 h2 bb br bw05 b--purple-blue items-center justify-center'><span>${r.area + r.num}</span></div>
-                <div class='flex w-20 h2 bb br bw05 b--purple-blue items-center justify-center'><span>${r.name}</span></div>
+                <div 
+                  onclick=${this.handleClick(r.id, r.name , r.phone)}
+                  class='flex w-20 h2 bb br bw05 b--purple-blue purple-blue items-center justify-center'>
+                  <span>${r.name}</span>
+                </div>
                 <div class='flex w-30 h2 bb br bw05 b--purple-blue items-center justify-center'><span>${r.phone ? r.phone : '暂无'}</span></div>
               </li>
             `
@@ -213,6 +217,26 @@ class ReportList extends Nanocomponent {
       `
     }
   }
+
+  handleClick (id, name, phone) {
+    return e => {
+      this.emit('state:loading', true)
+      this.emit('render')
+
+      getData('polling', JSON.stringify({ id }), datas => {
+        var d = {}
+        d.list = datas
+        d.name = name
+        d.phone = phone
+        this.emit('state:status', 3)
+        this.emit('state:person', d)
+        this.emit('state:loading', false)
+        this.emit('render')
+      }, err => {
+        console.log(err)
+      })
+    }
+  } 
 
   load () {
     this.emit('state:loading', true)
