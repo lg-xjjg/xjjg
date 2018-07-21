@@ -3,7 +3,7 @@ var css = require('sheetify')
 var Nanocomponent = require('choo/component')
 var mitt = require('mitt')
 var amme = mitt()
-const { postKey, getData, postData } = require('../fetch/cz.js')
+const { postKey, getData, postData, clearImage } = require('../fetch/cz.js')
 
 var TITLE = '分类记录'
 
@@ -176,6 +176,8 @@ class DrateList extends Nanocomponent {
       }, err => {
         console.log(err)
       })
+
+      clearImage()
     }
   }
 
