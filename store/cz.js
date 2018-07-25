@@ -24,8 +24,17 @@ module.exports = (state, emitter) => {
   emitter.on('state:drate', datas => {
     var drate = datas.map(d => {
       var total = d.rot + d.unrot + d.harm + d.recycle
+
+      d.t_rot = d.t_rot ? d.t_rot : 0
+      d.t_unrot = d.t_unrot ? d.t_unrot : 0
+      d.t_harm = d.t_harm ? d.t_harm : 0
+      d.t_recycle = d.t_recycle ? d.t_recycle : 0
+
+      var t_total = d.t_rot + d.t_unrot + d.t_harm + d.t_recycle
       var rest = total - d.unrot
+      var t_rest = t_total - d.t_unrot
       var num = total ? ((rest / total) * 100).toFixed(1) + '%' : '0%'
+      var t_num = t_total ? ((t_rest / t_total) * 100).toFixed(1) + '%' : '0%'
       return {
         name: d.name,
         rot: d.rot,
@@ -33,7 +42,14 @@ module.exports = (state, emitter) => {
         harm: d.harm,
         recycle: d.recycle,
         total: total,
+        t_rot: d.t_rot,
+        t_unrot: d.t_unrot,
+        t_harm: d.t_harm,
+        t_recycle: d.t_recycle,
+        t_total: t_total,        
         n: total === 0 ? -1 : rest / total,
+        t_n: t_total === 0 ? -1 : t_rest / t_total,
+        t_num: t_num,
         num: num
       }
     })

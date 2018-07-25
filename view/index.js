@@ -2,7 +2,7 @@ var html = require('choo/html')
 var Nanocomponent = require('choo/component')
 var ImageCompressor = require('image-compressor.js')
 var QCZ = require('./cz.js')
-const { getData, clearImage } = require('../fetch')
+const { getData, clearData } = require('../fetch')
 
 var TITLE = '统计结果'
 
@@ -697,7 +697,7 @@ class QXJJG extends Nanocomponent {
 
       }, err => { console.log(err) })
 
-      clearImage()
+      clearData()
     }
   }
 

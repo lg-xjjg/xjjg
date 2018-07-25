@@ -10,7 +10,7 @@ module.exports = {
     .then(resolve)
     .catch(reject)
   },
-  clearImage () {
+  clearData () {
     var d = new Date()
     d.setHours(0,0,0,0)
     var yMidnight = d.getTime() - 24 * 1000 * 3600
@@ -59,6 +59,31 @@ module.exports = {
     .catch(err => {
       console.log(err)
     })
+
+    var midNight = new Date()
+    midNight.setHours(0, 0, 0, 0)
+
+    fetch(url('village', JSON.stringify({
+      cDate: { $lt: midNight.getTime() }      
+    })), {
+      method: 'put',
+      headers: {
+        'Content-type': 'application/json;charset=utf-8'
+      },
+      body: JSON.stringify({
+        "$set": {
+          "t_rot": 0,
+          "t_unrot": 0,
+          "t_harm": 0,
+          "t_recycle": 0
+        }
+      })      
+    })
+    .then(res => {
+    })
+    .catch(err => {
+      console.log(err)
+    })    
   }  
 }
 

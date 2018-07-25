@@ -140,8 +140,16 @@ class DrateList extends Nanocomponent {
       `
     } else if (this.state.czstatus === 2){
       return html`
-        <ul class='w-100 pa0'>
+        <ul class='w-100 pa0 pb6'>
           <button class='f4 mt2 ml2 mb2 bn bg-purple-blue h2 br2 white' onclick=${this.back()}>返回</button>
+          <p class='f3 ml2'>今日情况:</p>
+          <p class='f4 ml2'>减量率：<span class='purple-blue'>${this.state.czdetail.t_num}</span></p>
+          <p class='f4 ml2'>可腐烂：<span class='purple-blue'>${this.state.czdetail.t_rot}kg</span></p>
+          <p class='f4 ml2'>不可腐烂：<span class='purple-blue'>${this.state.czdetail.t_unrot}kg</span></p>
+          <p class='f4 ml2'>可回收：<span class='purple-blue'>${this.state.czdetail.t_recycle}kg</span></p>
+          <p class='f4 ml2'>有毒有害：<span class='purple-blue'>${this.state.czdetail.t_harm}kg</span></p>     
+          <p class='f4 ml2'>总重：<span class='purple-blue'>${this.state.czdetail.t_total}kg</span></p>            
+          <p class='f3 ml2'>总计:</p>
           <p class='f4 ml2'>可腐烂：<span class='purple-blue'>${this.state.czdetail.rot}kg</span></p>
           <p class='f4 ml2'>不可腐烂：<span class='purple-blue'>${this.state.czdetail.unrot}kg</span></p>
           <p class='f4 ml2'>可回收：<span class='purple-blue'>${this.state.czdetail.recycle}kg</span></p>
