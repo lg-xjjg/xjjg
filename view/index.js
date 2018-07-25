@@ -77,7 +77,8 @@ class QTotal extends Nanocomponent {
           score10++
         }
       })
-      var t = score1 + score2 + score3 + score10
+
+      var t = score1 + score2 + score3
 
       var hg = ((score1 / t) * 100).toFixed(1) + '%'
       var cy = (((score1 + score2) / t) * 100).toFixed(1) + '%'
@@ -663,13 +664,38 @@ class QXJJG extends Nanocomponent {
   load () {
     if (this.state.status === 0) {
       getData('village', null, datas => {
-        this.emit('state:status', 1)
-        this.emit('state:village', datas)
-        this.emit('state:loading', false)
-        this.emit('render')
-      }, err => {
-        console.log(err)
-      })
+        getData('polling', null, pDatas => {
+          var fDatas = datas.map(d => {
+            var score1 = 0
+            var score2 = 0 
+            var score3 = 0
+
+            pDatas.forEach(p => {
+              if (p.villageId === d.id) {
+                if (p.score === 1) {
+                  score1++
+                } else if (p.score === 2) {
+                  score2++
+                } else if (p.score === 3) {
+                  score3++
+                }
+              }     
+            })
+
+            d.score1 = score1
+            d.score2 = score2
+            d.score3 = score3            
+
+            return d
+          })
+
+          this.emit('state:status', 1)          
+          this.emit('state:village', fDatas)
+          this.emit('state:loading', false)
+          this.emit('render')
+        }, err => { console.log(err) })
+
+      }, err => { console.log(err) })
 
       clearImage()
     }
