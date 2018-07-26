@@ -26,7 +26,7 @@ class QTotal extends Nanocomponent {
           html`            
             <ul class='pa0 list'>        
               <p class='db mr2'>总户数: ${this.state.today.l}户</p>
-              <p class='db mr2'>巡检户数: ${this.state.today.t}户</p>                  
+              <p class='db mr2'>巡检户数: ${this.state.today.zt}户</p>                  
               <li class='dib mr2'>好: ${this.state.today.score1}户</li>
               <li class='dib mr2'>中: ${this.state.today.score2}户</li>
               <li class='dib mr2'>差: ${this.state.today.score3}户</li>
@@ -79,7 +79,7 @@ class QTotal extends Nanocomponent {
       })
 
       var t = score1 + score2 + score3
-
+      var zt = score1 + score2 + score3 + score10
       var hg = ((score1 / t) * 100).toFixed(1) + '%'
       var cy = (((score1 + score2) / t) * 100).toFixed(1) + '%'
 
@@ -91,7 +91,7 @@ class QTotal extends Nanocomponent {
         villageId: this.state.villageId
       }), datas => {
         var l = datas.length
-        this.emit('state:today', {score1, score2, score3, score10, hg, cy, t, l})
+        this.emit('state:today', {score1, score2, score3, score10, hg, cy, t, zt, l})
         this.render()
       }, err => {
         console.log(err)
