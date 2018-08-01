@@ -65,7 +65,7 @@ module.exports = {
 
     fetch(url('village', JSON.stringify({
       cDate: { $lt: midNight.getTime() }      
-    })), {
+    }) + '&m=true'), {
       method: 'put',
       headers: {
         'Content-type': 'application/json;charset=utf-8'
